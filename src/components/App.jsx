@@ -19,6 +19,21 @@ class App extends Component {
     number: '',
   };
 
+  componentDidMount() {
+    const contacts = localStorage.getItem('contacts');
+    const parsedContacts = JSON.parse(contacts);
+    if (parsedContacts) {
+      this.setState({ contacts: parsedContacts });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    const { contacts } = this.state;
+    if (contacts !== prevState.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(contacts));
+    }
+  }
+
   onAddContact = ({ name, number }) => {
     const isContactInPhonebook = this.state.contacts.find(
       contact => contact.name.toLocaleLowerCase() === name.toLowerCase()
@@ -56,10 +71,10 @@ class App extends Component {
     const { filter } = this.state;
     return (
       <div className="container">
-        <h1 className='title'>Phonebook</h1>
+        <h1 className="title">Phonebook</h1>
         <ContactForm onSubmit={this.onAddContact} />
         <Filter value={filter} onChangeFilter={this.onFilterContacts} />
-        <h2 className='subTitle'>Contacts</h2>
+        <h2 className="subTitle">Contacts</h2>
         <ContactList
           contacts={this.onGetContacts()}
           onDeleteContact={this.onDeleteContact}
